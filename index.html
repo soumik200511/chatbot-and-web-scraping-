@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ollama Chatbot</title>
+</head>
+<body>
+
+<h2>Ollama Chatbot</h2>
+
+<select id="model">
+    <option value="llama3">Llama3</option>
+    <option value="gemma">Gemma</option>
+</select>
+
+<br><br>
+
+<input type="file" id="file">
+<br><br>
+
+<input type="text" id="message" placeholder="Type your message">
+<button onclick="sendMessage()">Send</button>
+
+<h3>Response:</h3>
+<div id="response"></div>
+
+<script>
+async function sendMessage() {
+    let message = document.getElementById("message").value;
+    let model = document.getElementById("model").value;
+    let fileInput = document.getElementById("file");
+
+    let formData = new FormData();
+    formData.append("message", message);
+    formData.append("model", model);
+
+    if (fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]);
+    }
+
+    let response = await fetch("/chat", {
+        method: "POST",
+        body: formData
+    });
+
+    let data = await response.json();
+    document.getElementById("response").innerText = data.reply;
+}
+</script>
+
+</body>
+</html>
